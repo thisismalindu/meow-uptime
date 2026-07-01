@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meow Uptime</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <main>
+      <h1>Meow Uptime</h1>
+      <p>A tiny uptime monitor.</p>
+
+      <form id="site-form">
+        <label for="url">Website URL</label>
+        <input id="url" name="url" type="url" placeholder="https://example.com" required>
+        <button type="submit">Add</button>
+      </form>
+
+      <p id="message"></p>
+      <h2>Monitored sites</h2>
+      <section id="sites">No sites yet.</section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

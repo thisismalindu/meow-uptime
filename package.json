@@ -1,0 +1,13 @@
+{
+  "name": "meow-uptime",
+  "version": "0.1.0",
+  "description": "A tiny uptime monitor for learning monitoring and reliability",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
