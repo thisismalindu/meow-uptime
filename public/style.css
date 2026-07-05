@@ -39,9 +39,15 @@ button {
 
 .up {
   color: green;
+  font-weight: bold;
 }
 
 .down,
 .incident {
   color: #c00;
+  font-weight: bold;
+}
+
+.unknown {
+  color: #666;
 }
