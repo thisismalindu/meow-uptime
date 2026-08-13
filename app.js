@@ -4,11 +4,11 @@ const { createClient } = require("@supabase/supabase-js");
 const app = express();
 let supabase = null;
 
-if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+if (process.env.SUPABASE_URL && process.env.SUPABASE_SECRET_KEY) {
   try {
     supabase = createClient(
       process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
+      process.env.SUPABASE_SECRET_KEY
     );
   } catch (error) {
     console.log(`Supabase setup error: ${error.message}`);
