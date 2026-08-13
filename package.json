@@ -4,7 +4,7 @@
   "description": "A tiny uptime monitor for learning monitoring and reliability",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node --env-file=.env server.js",
     "test": "node --test"
   },
   "dependencies": {
