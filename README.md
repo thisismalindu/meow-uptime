@@ -1,5 +1,7 @@
 # Meow Uptime
 
+<img width="852" height="954" alt="image" src="https://github.com/user-attachments/assets/e45ed4d6-17a4-4361-a951-921771e27862" />
+
 Meow Uptime is a small uptime monitoring app I made while learning more about monitoring, Docker, testing, servers, and reliability.
 
 You can add HTTP or HTTPS websites to the app. Meow Uptime checks them every 60 seconds and shows their latest status, response time, failure count, and incident state.
