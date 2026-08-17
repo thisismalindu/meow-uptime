@@ -56,7 +56,7 @@ app.get("/api/sites", async (request, response) => {
 });
 
 app.post("/api/sites", async (request, response) => {
-  const url = request.body && request.body.url;
+  const url = request.body?.url;
 
   if (!isValidUrl(url)) {
     return response.status(400).json({ error: "URL must start with http:// or https://" });
