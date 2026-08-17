@@ -1,59 +1,33 @@
 const { supabase, getFailureState } = require("./app");
 
-async function saveCheck(site, update) {
-  if (!supabase) {
-    return;
-  }
-
-  const result = await supabase.from("sites").update(update).eq("id", site.id);
-  if (result.error) {
-    console.log(result.error.message);
-  }
-}
-
 async function checkSite(site) {
   console.log(`checking ${site.url}`);
   const started = Date.now();
-  let update;
+  const response = await fetch(site.url)
+  const healthy = response?.ok === true;
+  const updates = {
+    status: healthy ? "UP" : "DOWN",
+    status_code: response?.status ?? null,
+    latency_ms: response ? Date.now() - started : null,
+    last_checked: new Date().toISOString(),
+    ...getFailureState(site.failure_count, healthy)
+  };
 
-  try {
-    const options = typeof AbortSignal.timeout === "function"
-      ? { signal: AbortSignal.timeout(8000) }
-      : {};
-    const response = await fetch(site.url, options);
-    const healthy = response.ok;
-    const state = getFailureState(site.failure_count, healthy);
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from("sites")
+        .update(updates)
+        .eq("id", site.id);
 
-    update = {
-      status: healthy ? "UP" : "DOWN",
-      status_code: response.status,
-      latency_ms: Date.now() - started,
-      last_checked: new Date().toISOString(),
-      ...state
-    };
-  } catch (error) {
-    const state = getFailureState(site.failure_count, false);
-    update = {
-      status: "DOWN",
-      status_code: null,
-      latency_ms: null,
-      last_checked: new Date().toISOString(),
-      ...state
-    };
+      if (error) console.log(error.message);
+    } catch (error) {
+      console.log(`Could not update ${site.url}: ${error.message}`);
+    }
   }
 
-  try {
-    await saveCheck(site, update);
-  } catch (error) {
-    console.log(`Could not update ${site.url}: ${error.message}`);
-  }
-
-  if (update.status === "UP") {
-    console.log(`UP ${update.status_code} ${update.latency_ms}ms`);
-  } else {
-    console.log(`DOWN ${site.url}`);
-  }
-  return update;
+  console.log(healthy ? `UP ${updates.status_code} ${updates.latency_ms}ms` : `DOWN ${site.url}`);
+  return updates;
 }
 
 async function checkAllSites() {
@@ -62,22 +36,19 @@ async function checkAllSites() {
     return;
   }
 
-  const result = await supabase.from("sites").select("*");
-  if (result.error) {
-    console.log(result.error.message);
-    return;
-  }
+  const { data, error } = await supabase.from("sites").select("*");
+  if (error) return console.log(error.message);
 
-  for (const site of result.data) {
-    await checkSite(site);
-  }
+  await Promise.all(data.map(checkSite));
+}
+
+function runMonitor() {
+  checkAllSites().catch((error) => console.log(error.message));
 }
 
 function startMonitor() {
-  checkAllSites().catch((error) => console.log(error.message));
-  return setInterval(() => {
-    checkAllSites().catch((error) => console.log(error.message));
-  }, 60000);
+  runMonitor();
+  return setInterval(runMonitor, 60000);
 }
 
 module.exports = { checkSite, checkAllSites, startMonitor };
