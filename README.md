@@ -210,13 +210,18 @@ The tests do not need Supabase credentials.
 Build the image:
 
 ```bash
-docker build -t meow-uptime .
+docker compose build
 ```
 
 Run it using the same `.env` file:
 
 ```bash
-docker run --rm -p 3000:3000 --env-file .env meow-uptime
+docker compose up
+```
+
+Or, in one single command:
+```bash
+docker compose up --build
 ```
 
 Then open:
